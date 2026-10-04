@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BIGMENOV — Подбор образа</title>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg-card: #141414;
+  --bg-elevated: #1c1c1c;
+  --border: #2a2a2a;
+  --text: #f2f2f2;
+  --text-muted: #8a8a8a;
+  --accent: #ffffff;
+  --radius: 14px;
+  --radius-sm: 10px;
+  --shadow: 0 12px 40px rgba(0,0,0,0.45);
+  --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+body { display: flex; flex-direction: column; min-height: 100vh; }
+
+/* Header */
+.header {
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(16px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo { display: flex; flex-direction: column; }
+.logo-name {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+}
+.logo-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.container {
+  flex: 1;
+  max-width: 920px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 28px 18px 70px;
+}
+
+/* Screens */
+.screen { display: none; }
+.screen.active {
+  display: block;
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero */
+.hero { text-align: center; padding: 36px 0 12px; }
+
+.hero-visual {
+  width: 100%;
+  max-width: 380px;
+  height: 240px;
+  margin: 0 auto 36px;
+  border-radius: var(--radius);
+  background: linear-gradient(155deg, #151515 0%, #222 45%, #151515 100%);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+
+.hero-visual::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 28% 38%, rgba(255,255,255,0.07) 0%, transparent 55%),
+    radial-gradient(circle at 72% 65%, rgba(255,255,255,0.04) 0%, transparent 45%);
+}
+
+.hero-visual-inner { text-align: center; z-index: 1; }
+.hero-visual-icon { font-size: 56px; margin-bottom: 10px; opacity: 0.75; }
+.hero-visual-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: clamp(26px, 5.2vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+
+.hero p {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 420px;
+  margin: 0 auto 34px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 15px 30px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  letter-spacing: 0.2px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #0a0a0a;
+}
+.btn-primary:hover {
+  background: #e8e8e8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255,255,255,0.12);
+}
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover {
+  border-color: #555;
+  background: var(--bg-elevated);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 9px 16px;
+  font-size: 12px;
+  border-radius: 50px;
+}
+.btn-outline:hover {
+  border-color: var(--text);
+  background: var(--bg-elevated);
+}
+
+.btn-sm { padding: 10px 16px; font-size: 13px; }
+.btn-block { width: 100%; }
+
+/* Progress */
+.progress-wrap { margin-bottom: 32px; }
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.progress-step {
+  font-size: 13px;
+  color: var(--text-muted);
+  letter-spacing: 0.4px;
+}
+.progress-bar {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.step-title {
+  font-size: clamp(21px, 4vw, 27px);
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+.step-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 26px;
+}
+
+/* Cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.select-card {
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 14px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+  user-select: none;
+}
+.select-card:hover {
+  border-color: #444;
+  background: var(--bg-elevated);
+}
+.select-card.selected {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.05);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.select-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 9px;
+  right: 11px;
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  color: #0a0a0a;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.select-card .card-icon { font-size: 26px; margin-bottom: 10px; opacity: 0.85; }
+.select-card .card-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+.select-card .card-sub { font-size: 11px; color: var(--text-muted); }
+
+/* Options */
+.options-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+.option-btn {
+  flex: 1 1 auto;
+  min-width: 64px;
+  padding: 13px 16px;
+  background: var(--bg-card);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: center;
+}
+.option-btn:hover {
+  border-color: #444;
+  background: var(--bg-elevated);
+}
+.option-btn.selected {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.07);
+  color: var(--accent);
+}
+.budget-btn { min-width: 130px; flex: 1 1 130px; }
+
+/* Colors */
+.colors-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.color-swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  user-select: none;
+}
+.color-circle {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  transition: all var(--transition);
+  position: relative;
+}
+.color-swatch.selected .color-circle {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent);
+}
+.color-swatch.selected .color-circle::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+}
+.color-label { font-size: 11px; color: var(--text-muted); }
+.color-swatch.selected .color-label { color: var(--text); }
+
+/* Nav */
+.nav-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+}
+.nav-buttons .btn { flex: 1; }
+
+/* Results */
+.results-header { text-align: center; margin-bottom: 32px; }
+.results-header h2 {
+  font-size: clamp(23px, 4vw, 30px);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.results-meta {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.meta-tag {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  padding: 5px 13px;
+  border-radius: 50px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 18px;
+  margin-bottom: 44px;
+}
+
+.product-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all var(--transition);
+}
+.product-card:hover {
+  border-color: #3a3a3a;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.product-img {
+  width: 100%;
+  aspect-ratio: 3/4;
+  background: var(--bg-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-img-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(165deg, #181818, #232323);
+}
+.product-img-placeholder .emoji { font-size: 40px; opacity: 0.7; }
+.product-img-placeholder .cat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+
+.product-body { padding: 15px; }
+.product-name {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+.product-cat {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+.product-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.product-price {
+  font-size: 16px;
+  font-weight: 700;
+}
+.product-size {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+.product-actions {
+  display: flex;
+  gap: 8px;
+}
+.product-actions .btn { flex: 1; padding: 9px 10px; font-size: 12px; }
+
+/* Outfit summary */
+.outfit-block {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 28px;
+}
+.outfit-block h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.outfit-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.outfit-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.outfit-item:last-child { border-bottom: none; }
+.outfit-item-name { color: var(--text); }
+.outfit-item-price { color: var(--text-muted); font-weight: 600; }
+.outfit-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 16px;
+  font-weight: 700;
+}
+.outfit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.outfit-actions .btn { flex: 1; min-width: 140px; }
+
+/* Empty state */
+.empty-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+.empty-results .emoji { font-size: 40px; margin-bottom: 12px; opacity: 0.6; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+.modal-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+.modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 400px;
+  padding: 28px;
+  transform: translateY(16px);
+  transition: transform 0.3s ease;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.modal p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+}
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  letter-spacing: 0.3px;
+}
+.form-group input {
+  width: 100%;
+  padding: 13px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 15px;
+  outline: none;
+  transition: border-color var(--transition);
+}
+.form-group input:focus { border-color: #555; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+.modal-actions .btn { flex: 1; }
+
+.success-msg {
+  text-align: center;
+  padding: 20px 0 8px;
+}
+.success-msg .icon {
+  font-size: 42px;
+  margin-bottom: 14px;
+}
+.success-msg h3 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+.success-msg p {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* Detail modal */
+.detail-modal .product-detail-img {
+  width: 100%;
+  aspect-ratio: 1;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  font-size: 48px;
+}
+.detail-price {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 8px 0 4px;
+}
+.detail-info {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--accent);
+  color: #0a0a0a;
+  padding: 12px 24px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 300;
+  opacity: 0;
+  transition: all 0.35s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .header { padding: 14px 16px; }
+  .container { padding: 20px 14px 60px; }
+  .cards-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px;
+  }
+  /* 5-я карточка: Sport и Аксессуары — на всю ширину */
+  #style-cards .select-card:nth-child(5),
+  #category-cards .select-card:nth-child(5) {
+    grid-column: 1 / -1;
+  }
+  .select-card {
+    padding: 18px 12px;
+  }
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .product-body { padding: 12px; }
+  .product-name { font-size: 13px; }
+  .product-price { font-size: 14px; }
+  .product-actions .btn { font-size: 11px; padding: 8px 6px; }
+  .budget-btn { min-width: 100%; }
+  .nav-buttons { flex-direction: column-reverse; }
+  .outfit-actions { flex-direction: column; }
+  .hero-visual { height: 200px; }
+}
+
+@media (max-width: 380px) {
+  .products-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <span class="logo-name">BIGMENOV</span>
+    <span class="logo-sub">Мужская одежда</span>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- SCREEN: Hero -->
+  <section id="screen-hero" class="screen active">
+    <div class="hero">
+      <div class="hero-visual">
+        <div class="hero-visual-inner">
+          <div class="hero-visual-icon">👔</div>
+          <div class="hero-visual-text">Стиль для мужчин</div>
+        </div>
+      </div>
+      <h1>Подберем образ под вас</h1>
+      <p>Ответьте на несколько вопросов, и мы подберем вещи под ваш стиль и бюджет</p>
+      <button class="btn btn-primary" onclick="startQuiz()">Подобрать образ</button>
+    </div>
+  </section>
+
+  <!-- SCREEN: Quiz -->
+  <section id="screen-quiz" class="screen">
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span class="progress-step" id="progress-text">Шаг 1 из 5</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width: 20%"></div>
+      </div>
+    </div>
+
+    <!-- Step 1: Style -->
+    <div class="quiz-step" id="step-1">
+      <h2 class="step-title">Какой стиль вам ближе?</h2>
+      <p class="step-desc">Выберите один вариант</p>
+      <div class="cards-grid" id="style-cards">
+        <div class="select-card" data-value="casual" onclick="selectOption('style', this)">
+          <div class="card-icon">👕</div>
+          <div class="card-title">Casual</div>
+          <div class="card-sub">Повседневный стиль</div>
+        </div>
+        <div class="select-card" data-value="classic" onclick="selectOption('style', this)">
+          <div class="card-icon">🤵</div>
+          <div class="card-title">Classic</div>
+          <div class="card-sub">Классика</div>
+        </div>
+        <div class="select-card" data-value="smart-casual" onclick="selectOption('style', this)">
+          <div class="card-icon">🧥</div>
+          <div class="card-title">Smart Casual</div>
+          <div class="card-sub">Стильно и универсально</div>
+        </div>
+        <div class="select-card" data-value="streetwear" onclick="selectOption('style', this)">
+          <div class="card-icon">🧢</div>
+          <div class="card-title">Streetwear</div>
+          <div class="card-sub">Свободный городской стиль</div>
+        </div>
+        <div class="select-card" data-value="sport" onclick="selectOption('style', this)">
+          <div class="card-icon">🏃</div>
+          <div class="card-title">Sport</div>
+          <div class="card-sub">Спортивный стиль</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Category -->
+    <div class="quiz-step" id="step-2" style="display:none">
+      <h2 class="step-title">Что вы ищете?</h2>
+      <p class="step-desc">Выберите категорию</p>
+      <div class="cards-grid" id="category-cards">
+        <div class="select-card" data-value="full" onclick="selectOption('category', this)">
+          <div class="card-icon">👔</div>
+          <div class="card-title">Полный образ</div>
+          <div class="card-sub">Комплект вещей</div>
+        </div>
+        <div class="select-card" data-value="top" onclick="selectOption('category', this)">
+          <div class="card-icon">👕</div>
+          <div class="card-title">Верх</div>
+          <div class="card-sub">Футболки, рубашки</div>
+        </div>
+        <div class="select-card" data-value="bottom" onclick="selectOption('category', this)">
+          <div class="card-icon">👖</div>
+          <div class="card-title">Низ</div>
+          <div class="card-sub">Брюки, джинсы</div>
+        </div>
+        <div class="select-card" data-value="shoes" onclick="selectOption('category', this)">
+          <div class="card-icon">👟</div>
+          <div class="card-title">Обувь</div>
+          <div class="card-sub">Кеды, лоферы</div>
+        </div>
+        <div class="select-card" data-value="accessories" onclick="selectOption('category', this)">
+          <div class="card-icon">⌚</div>
+          <div class="card-title">Аксессуары</div>
+          <div class="card-sub">Ремни, сумки</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Size -->
+    <div class="quiz-step" id="step-3" style="display:none">
+      <h2 class="step-title">Ваш размер</h2>
+      <p class="step-desc">Выберите один размер</p>
+      <div class="options-row" id="size-options">
+        <button class="option-btn" data-value="S" onclick="selectOption('size', this)">S</button>
+        <button class="option-btn" data-value="M" onclick="selectOption('size', this)">M</button>
+        <button class="option-btn" data-value="L" onclick="selectOption('size', this)">L</button>
+        <button class="option-btn" data-value="XL" onclick="selectOption('size', this)">XL</button>
+        <button class="option-btn" data-value="2XL" onclick="selectOption('size', this)">2XL</button>
+        <button class="option-btn" data-value="3XL" onclick="selectOption('size', this)">3XL</button>
+        <button class="option-btn" data-value="4XL" onclick="selectOption('size', this)">4XL</button>
+      </div>
+    </div>
+
+    <!-- Step 4: Budget -->
+    <div class="quiz-step" id="step-4" style="display:none">
+      <h2 class="step-title">Бюджет</h2>
+      <p class="step-desc">Выберите диапазон</p>
+      <div class="options-row" id="budget-options">
+        <button class="option-btn budget-btn" data-value="0-10000" onclick="selectOption('budget', this)">До 10 000 ₽</button>
+        <button class="option-btn budget-btn" data-value="10000-20000" onclick="selectOption('budget', this)">10 000–20 000 ₽</button>
+        <button class="option-btn budget-btn" data-value="20000-30000" onclick="selectOption('budget', this)">20 000–30 000 ₽</button>
+        <button class="option-btn budget-btn" data-value="30000-50000" onclick="selectOption('budget', this)">30 000–50 000 ₽</button>
+        <button class="option-btn budget-btn" data-value="50000+" onclick="selectOption('budget', this)">50 000 ₽+</button>
+      </div>
+    </div>
+
+    <!-- Step 5: Colors -->
+    <div class="quiz-step" id="step-5" style="display:none">
+      <h2 class="step-title">Предпочтительные цвета</h2>
+      <p class="step-desc">Можно выбрать несколько</p>
+      <div class="colors-grid" id="color-options">
+        <div class="color-swatch" data-value="black" onclick="toggleColor(this)">
+          <div class="color-circle" style="background:#1a1a1a; border-color:#333;"></div>
+          <span class="color-label">Черный</span>
+        </div>
+        <div class="color-swatch" data-value="white" onclick="toggleColor(this)">
+          <div class="color-circle" style="background:#f0f0f0;"></div>
+          <span class="color-label">Белый</span>
+        </div>
+        <div class="color-swatch" data-value="gray" onclick="toggleColor(this)">
+          <div class="color-circle" style="background:#6b6b6b;"></div>
+          <span class="color-label">Серый</span>
+        </div>
+        <div class="color-swatch" data-value="beige" onclick="toggleColor(this)">
+          <div class="color-circle" style="background:#c4b59a;"></div>
+          <span class="color-label">Бежевый</span>
+        </div>
+        <div class="color-swatch" data-value="blue" onclick="toggleColor(this)">
+          <div class="color-circle" style="background:#2c3e6b;"></div>
+          <span class="color-label">Синий</span>
+        </div>
+        <div class="color-swatch" data-value="brown" onclick="toggleColor(this)">
+          <div class="color-circle" style="background:#5c4033;"></div>
+          <span class="color-label">Коричневый</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-secondary" id="btn-back" onclick="prevStep()" style="display:none">Назад</button>
+      <button class="btn btn-primary" id="btn-next" onclick="nextStep()" disabled>Далее</button>
+    </div>
+  </section>
+
+  <!-- SCREEN: Results -->
+  <section id="screen-results" class="screen">
+    <div class="results-header">
+      <h2>Ваш образ готов</h2>
+      <div class="results-meta" id="results-meta"></div>
+    </div>
+
+    <div class="products-grid" id="products-grid"></div>
+
+    <div class="outfit-block" id="outfit-block" style="display:none">
+      <h3>Собрать образ полностью</h3>
+      <div class="outfit-items" id="outfit-items"></div>
+      <div class="outfit-total">
+        <span>Итого</span>
+        <span id="outfit-total-price">0 ₽</span>
+      </div>
+      <div class="outfit-actions">
+        <button class="btn btn-primary" onclick="openConsultModal()">Получить консультацию</button>
+        <button class="btn btn-secondary" onclick="restartQuiz()">Начать заново</button>
+      </div>
+    </div>
+
+    <div id="no-outfit-actions" style="text-align:center; margin-top:20px;">
+      <button class="btn btn-secondary" onclick="restartQuiz()">Начать заново</button>
+    </div>
+  </section>
+
+</main>
+
+<!-- Consult Modal -->
+<div class="modal-overlay" id="consult-modal">
+  <div class="modal">
+    <div id="consult-form">
+      <h3>Оставьте контакты</h3>
+      <p>Наш менеджер поможет оформить образ</p>
+      <div class="form-group">
+        <label>Имя</label>
+        <input type="text" id="input-name" placeholder="Как к вам обращаться" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label>Телефон / мессенджер</label>
+        <input type="text" id="input-contact" placeholder="+7 или Telegram / WhatsApp" autocomplete="tel">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeConsultModal()">Отмена</button>
+        <button class="btn btn-primary" onclick="submitConsult()">Отправить заявку</button>
+      </div>
+    </div>
+    <div id="consult-success" style="display:none">
+      <div class="success-msg">
+        <div class="icon">✓</div>
+        <h3>Спасибо! Заявка отправлена</h3>
+        <p>Менеджер свяжется с вами в ближайшее время</p>
+        <button class="btn btn-primary" style="margin-top:18px" onclick="closeConsultModal()">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="detail-modal">
+  <div class="modal detail-modal">
+    <div class="product-detail-img" id="detail-emoji"></div>
+    <h3 id="detail-name"></h3>
+    <div class="detail-price" id="detail-price"></div>
+    <div class="detail-info" id="detail-info"></div>
+    <p id="detail-desc" style="font-size:14px; color:var(--text-muted); margin-bottom:18px;"></p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeDetailModal()">Закрыть</button>
+      <button class="btn btn-primary" id="detail-add-btn">Добавить</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PRODUCTS = [
+  { id: 1, name: 'Черная базовая футболка', category: 'top', styles: ['casual','streetwear','sport'], colors: ['black'], price: 2490, sizes: ['S','M','L','XL','2XL','3XL','4XL'], emoji: '🖤', desc: 'Плотный хлопок 180 г/м². Идеальная посадка, не просвечивает.' },
+  { id: 2, name: 'Оверсайз худи графит', category: 'top', styles: ['casual','streetwear'], colors: ['gray','black'], price: 5990, sizes: ['M','L','XL','2XL','3XL'], emoji: '🧥', desc: 'Свободный крой, мягкий футер. Капюшон на двойной подкладке.' },
+  { id: 3, name: 'Бежевая рубашка Oxford', category: 'top', styles: ['classic','smart-casual'], colors: ['beige'], price: 4990, sizes: ['S','M','L','XL','2XL'], emoji: '👔', desc: 'Классический оксфорд. Можно носить навыпуск или заправленной.' },
+  { id: 4, name: 'Белая рубашка slim', category: 'top', styles: ['classic','smart-casual'], colors: ['white'], price: 4590, sizes: ['S','M','L','XL'], emoji: '⬜', desc: 'Приталенный силуэт. Легко гладится, держит форму.' },
+  { id: 5, name: 'Бомбер графитовый', category: 'top', styles: ['casual','streetwear','smart-casual'], colors: ['gray','black'], price: 8990, sizes: ['M','L','XL','2XL','3XL'], emoji: '🧥', desc: 'Легкий бомбер на молнии. Подходит для межсезонья.' },
+  { id: 6, name: 'Классический пиджак', category: 'top', styles: ['classic','smart-casual'], colors: ['black','gray','blue'], price: 14990, sizes: ['M','L','XL','2XL'], emoji: '🤵', desc: 'Полушерстяная ткань. Двухпуговичный, современный крой.' },
+  { id: 7, name: 'Черные прямые брюки', category: 'bottom', styles: ['classic','smart-casual','casual'], colors: ['black'], price: 5490, sizes: ['S','M','L','XL','2XL','3XL'], emoji: '👖', desc: 'Прямой крой, стрелки. Универсальная база гардероба.' },
+  { id: 8, name: 'Темно-синие джинсы', category: 'bottom', styles: ['casual','streetwear','smart-casual'], colors: ['blue'], price: 6290, sizes: ['S','M','L','XL','2XL','3XL','4XL'], emoji: '👖', desc: 'Плотный деним. Прямой силуэт, без потертостей.' },
+  { id: 9, name: 'Бежевые чиносы', category: 'bottom', styles: ['casual','smart-casual'], colors: ['beige'], price: 4990, sizes: ['S','M','L','XL','2XL'], emoji: '👖', desc: 'Хлопковые чинос. Удобная посадка, боковые карманы.' },
+  { id: 10, name: 'Широкие брюки street', category: 'bottom', styles: ['streetwear'], colors: ['black','gray'], price: 6790, sizes: ['M','L','XL','2XL','3XL'], emoji: '👖', desc: 'Объемный крой, высокая посадка. Для смелых образов.' },
+  { id: 11, name: 'Спортивные джоггеры', category: 'bottom', styles: ['sport','casual'], colors: ['black','gray'], price: 3990, sizes: ['S','M','L','XL','2XL','3XL'], emoji: '🏃', desc: 'Мягкий трикотаж. Манжеты, удобны для спорта и города.' },
+  { id: 12, name: 'Черные кожаные кеды', category: 'shoes', styles: ['casual','streetwear','smart-casual'], colors: ['black'], price: 7990, sizes: ['S','M','L','XL','2XL'], emoji: '👟', desc: 'Натуральная кожа. Подошва с хорошим сцеплением.' },
+  { id: 13, name: 'Коричневые лоферы', category: 'shoes', styles: ['classic','smart-casual'], colors: ['brown'], price: 9990, sizes: ['S','M','L','XL'], emoji: '👞', desc: 'Классические лоферы из гладкой кожи. Без шнурков.' },
+  { id: 14, name: 'Белые кроссовки', category: 'shoes', styles: ['sport','casual','streetwear'], colors: ['white'], price: 7490, sizes: ['S','M','L','XL','2XL'], emoji: '👟', desc: 'Легкие, дышащие. Универсальный белый цвет.' },
+  { id: 15, name: 'Кожаный ремень', category: 'accessories', styles: ['classic','smart-casual','casual'], colors: ['black','brown'], price: 3490, sizes: ['S','M','L','XL','2XL','3XL','4XL'], emoji: '⌚', desc: 'Натуральная кожа, металлическая пряжка. Ширина 3,5 см.' },
+  { id: 16, name: 'Сумка-мессенджер', category: 'accessories', styles: ['casual','streetwear','smart-casual'], colors: ['black','gray','brown'], price: 5990, sizes: ['S','M','L','XL','2XL','3XL','4XL'], emoji: '🎒', desc: 'Компактная сумка через плечо. Вмещает планшет и документы.' },
+  { id: 17, name: 'Спортивная куртка', category: 'top', styles: ['sport'], colors: ['black','blue','gray'], price: 8490, sizes: ['M','L','XL','2XL','3XL'], emoji: '🏃', desc: 'Ветрозащитная ткань, капюшон. Для тренировок и прогулок.' },
+  { id: 18, name: 'Серый свитшот', category: 'top', styles: ['casual','sport','streetwear'], colors: ['gray'], price: 4290, sizes: ['S','M','L','XL','2XL','3XL'], emoji: '👕', desc: 'Классический свитшот без капюшона. Мягкий футер.' }
+];
+
+const STYLE_LABELS = {
+  'casual': 'Casual',
+  'classic': 'Classic',
+  'smart-casual': 'Smart Casual',
+  'streetwear': 'Streetwear',
+  'sport': 'Sport'
+};
+
+const CATEGORY_LABELS = {
+  'full': 'Полный образ',
+  'top': 'Верх',
+  'bottom': 'Низ',
+  'shoes': 'Обувь',
+  'accessories': 'Аксессуары'
+};
+
+const BUDGET_LABELS = {
+  '0-10000': 'до 10 000 ₽',
+  '10000-20000': '10–20 тыс. ₽',
+  '20000-30000': '20–30 тыс. ₽',
+  '30000-50000': '30–50 тыс. ₽',
+  '50000+': 'от 50 000 ₽'
+};
+
+const COLOR_LABELS = {
+  black: 'Черный', white: 'Белый', gray: 'Серый',
+  beige: 'Бежевый', blue: 'Синий', brown: 'Коричневый'
+};
+
+let state = {
+  step: 1,
+  style: null,
+  category: null,
+  size: null,
+  budget: null,
+  colors: [],
+  cart: []
+};
+
+function startQuiz() {
+  document.getElementById('screen-hero').classList.remove('active');
+  document.getElementById('screen-quiz').classList.add('active');
+  state.step = 1;
+  updateProgress();
+  showStep(1);
+}
+
+function showStep(n) {
+  document.querySelectorAll('.quiz-step').forEach(el => el.style.display = 'none');
+  document.getElementById('step-' + n).style.display = 'block';
+  document.getElementById('btn-back').style.display = n > 1 ? 'inline-flex' : 'none';
+  const nextBtn = document.getElementById('btn-next');
+  if (n === 5) {
+    nextBtn.textContent = 'Показать мой образ';
+  } else {
+    nextBtn.textContent = 'Далее';
+  }
+  updateNextButton();
+}
+
+function updateProgress() {
+  const pct = (state.step / 5) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = 'Шаг ' + state.step + ' из 5';
+}
+
+function selectOption(type, el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.selected').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  state[type] = el.dataset.value;
+  updateNextButton();
+}
+
+function toggleColor(el) {
+  const val = el.dataset.value;
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    if (!state.colors.includes(val)) state.colors.push(val);
+  } else {
+    state.colors = state.colors.filter(c => c !== val);
+  }
+  updateNextButton();
+}
+
+function updateNextButton() {
+  const btn = document.getElementById('btn-next');
+  let ok = false;
+  if (state.step === 1) ok = !!state.style;
+  else if (state.step === 2) ok = !!state.category;
+  else if (state.step === 3) ok = !!state.size;
+  else if (state.step === 4) ok = !!state.budget;
+  else if (state.step === 5) ok = state.colors.length > 0;
+  btn.disabled = !ok;
+}
+
+function nextStep() {
+  if (state.step < 5) {
+    state.step++;
+    updateProgress();
+    showStep(state.step);
+  } else {
+    showResults();
+  }
+}
+
+function prevStep() {
+  if (state.step > 1) {
+    state.step--;
+    updateProgress();
+    showStep(state.step);
+  }
+}
+
+function parseBudget(budget) {
+  if (budget === '0-10000') return { min: 0, max: 10000 };
+  if (budget === '10000-20000') return { min: 10000, max: 20000 };
+  if (budget === '20000-30000') return { min: 20000, max: 30000 };
+  if (budget === '30000-50000') return { min: 30000, max: 50000 };
+  return { min: 50000, max: Infinity };
+}
+
+function scoreProduct(p) {
+  let score = 0;
+  if (p.styles.includes(state.style)) score += 40;
+  if (p.sizes.includes(state.size)) score += 25;
+  else return -1;
+  const budget = parseBudget(state.budget);
+  if (p.price >= budget.min && p.price <= budget.max) score += 20;
+  else if (p.price < budget.min) score += 5;
+  else score -= 10;
+  const colorMatch = p.colors.some(c => state.colors.includes(c));
+  if (colorMatch) score += 15;
+  if (state.category === 'full') {
+    // prefer variety
+  } else if (p.category === state.category) {
+    score += 30;
+  } else {
+    score -= 20;
+  }
+  return score;
+}
+
+function getMatchedProducts() {
+  const scored = PRODUCTS.map(p => ({ product: p, score: scoreProduct(p) }))
+    .filter(x => x.score > 0)
+    .sort((a, b) => b.score - a.score);
+
+  let results = scored.map(x => x.product);
+
+  if (state.category === 'full') {
+    // pick balanced set: prefer different categories
+    const picked = [];
+    const usedCats = new Set();
+    for (const p of results) {
+      if (picked.length >= 4) break;
+      if (!usedCats.has(p.category) || picked.length < 2) {
+        picked.push(p);
+        usedCats.add(p.category);
+      }
+    }
+    // fill if needed
+    for (const p of results) {
+      if (picked.length >= 4) break;
+      if (!picked.find(x => x.id === p.id)) picked.push(p);
+    }
+    results = picked;
+  } else {
+    results = results.slice(0, 4);
+  }
+
+  // fallback if empty
+  if (results.length === 0) {
+    results = PRODUCTS.filter(p => p.sizes.includes(state.size))
+      .sort((a, b) => {
+        const aStyle = a.styles.includes(state.style) ? 1 : 0;
+        const bStyle = b.styles.includes(state.style) ? 1 : 0;
+        return bStyle - aStyle;
+      })
+      .slice(0, 4);
+  }
+
+  return results;
+}
+
+function formatPrice(n) {
+  return n.toLocaleString('ru-RU') + ' ₽';
+}
+
+function showResults() {
+  document.getElementById('screen-quiz').classList.remove('active');
+  document.getElementById('screen-results').classList.add('active');
+
+  const meta = document.getElementById('results-meta');
+  meta.innerHTML = `
+    <span class="meta-tag">${STYLE_LABELS[state.style]}</span>
+    <span class="meta-tag">${CATEGORY_LABELS[state.category]}</span>
+    <span class="meta-tag">${state.size}</span>
+    <span class="meta-tag">${BUDGET_LABELS[state.budget]}</span>
+    <span class="meta-tag">${state.colors.map(c => COLOR_LABELS[c]).join(', ')}</span>
+  `;
+
+  const products = getMatchedProducts();
+  const grid = document.getElementById('products-grid');
+
+  if (products.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-results" style="grid-column:1/-1">
+        <div class="emoji">🔍</div>
+        <p>По вашим параметрам точных совпадений не найдено.<br>Попробуйте изменить фильтры.</p>
+      </div>`;
+    document.getElementById('outfit-block').style.display = 'none';
+    document.getElementById('no-outfit-actions').style.display = 'block';
+    return;
+  }
+
+  grid.innerHTML = products.map(p => `
+    <div class="product-card">
+      <div class="product-img">
+        <div class="product-img-placeholder">
+          <span class="emoji">${p.emoji}</span>
+          <span class="cat-label">${CATEGORY_LABELS[p.category] || p.category}</span>
+        </div>
+      </div>
+      <div class="product-body">
+        <div class="product-name">${p.name}</div>
+        <div class="product-cat">${CATEGORY_LABELS[p.category] || p.category}</div>
+        <div class="product-meta">
+          <span class="product-price">${formatPrice(p.price)}</span>
+          <span class="product-size">${state.size}</span>
+        </div>
+        <div class="product-actions">
+          <button class="btn btn-outline" onclick="showDetail(${p.id})">Подробнее</button>
+          <button class="btn btn-primary btn-sm" onclick="addToCart(${p.id})">Добавить</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('outfit-block').style.display = 'none';
+  document.getElementById('no-outfit-actions').style.display = 'block';
+  state.cart = [];
+  updateOutfitBlock();
+}
+
+function addToCart(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  if (state.cart.find(x => x.id === id)) {
+    showToast('Уже в образе');
+    return;
+  }
+  state.cart.push(p);
+  updateOutfitBlock();
+  showToast('Добавлено в образ');
+}
+
+function removeFromCart(id) {
+  state.cart = state.cart.filter(x => x.id !== id);
+  updateOutfitBlock();
+}
+
+function updateOutfitBlock() {
+  const block = document.getElementById('outfit-block');
+  const noAct = document.getElementById('no-outfit-actions');
+  if (state.cart.length === 0) {
+    block.style.display = 'none';
+    noAct.style.display = 'block';
+    return;
+  }
+  block.style.display = 'block';
+  noAct.style.display = 'none';
+  const items = document.getElementById('outfit-items');
+  items.innerHTML = state.cart.map(p => `
+    <div class="outfit-item">
+      <span class="outfit-item-name">${p.emoji} ${p.name}</span>
+      <span class="outfit-item-price">${formatPrice(p.price)}</span>
+    </div>
+  `).join('');
+  const total = state.cart.reduce((s, p) => s + p.price, 0);
+  document.getElementById('outfit-total-price').textContent = formatPrice(total);
+}
+
+function showDetail(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('detail-emoji').textContent = p.emoji;
+  document.getElementById('detail-name').textContent = p.name;
+  document.getElementById('detail-price').textContent = formatPrice(p.price);
+  document.getElementById('detail-info').textContent =
+    `${CATEGORY_LABELS[p.category]} · ${state.size} · ${p.colors.map(c => COLOR_LABELS[c]).join(', ')}`;
+  document.getElementById('detail-desc').textContent = p.desc;
+  const addBtn = document.getElementById('detail-add-btn');
+  addBtn.onclick = () => {
+    addToCart(id);
+    closeDetailModal();
+  };
+  document.getElementById('detail-modal').classList.add('open');
+}
+
+function closeDetailModal() {
+  document.getElementById('detail-modal').classList.remove('open');
+}
+
+function openConsultModal() {
+  document.getElementById('consult-form').style.display = 'block';
+  document.getElementById('consult-success').style.display = 'none';
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-contact').value = '';
+  document.getElementById('consult-modal').classList.add('open');
+}
+
+function closeConsultModal() {
+  document.getElementById('consult-modal').classList.remove('open');
+}
+
+function submitConsult() {
+  const name = document.getElementById('input-name').value.trim();
+  const contact = document.getElementById('input-contact').value.trim();
+  if (!name || !contact) {
+    showToast('Заполните все поля');
+    return;
+  }
+  document.getElementById('consult-form').style.display = 'none';
+  document.getElementById('consult-success').style.display = 'block';
+}
+
+function restartQuiz() {
+  state = {
+    step: 1,
+    style: null,
+    category: null,
+    size: null,
+    budget: null,
+    colors: [],
+    cart: []
+  };
+  document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+  document.getElementById('screen-results').classList.remove('active');
+  document.getElementById('screen-quiz').classList.remove('active');
+  document.getElementById('screen-hero').classList.add('active');
+  updateProgress();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// close modals on overlay click
+document.getElementById('consult-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeConsultModal();
+});
+document.getElementById('detail-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeDetailModal();
+});
+</script>
+</body>
+</html>
