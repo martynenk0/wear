@@ -655,21 +655,29 @@ body { display: flex; flex-direction: column; min-height: 100vh; }
 }
 
 /* Responsive */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .header { padding: 14px 16px; }
   .container { padding: 20px 14px 60px; }
+
   .cards-grid {
-    grid-template-columns: 1fr 1fr !important;
+    display: flex !important;
+    flex-wrap: wrap;
     gap: 10px;
   }
-  /* 5-я карточка: Sport и Аксессуары — на всю ширину */
-  #style-cards .select-card:nth-child(5),
-  #category-cards .select-card:nth-child(5) {
-    grid-column: 1 / -1;
-  }
-  .select-card {
+  .cards-grid .select-card {
+    flex: 1 1 calc(50% - 5px);
+    min-width: calc(50% - 5px);
+    max-width: calc(50% - 5px);
     padding: 18px 12px;
   }
+  /* Sport и Аксессуары — на всю ширину, до краёв ряда */
+  .cards-grid .select-card.card-wide {
+    flex: 1 1 100% !important;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
   .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .product-body { padding: 12px; }
   .product-name { font-size: 13px; }
@@ -748,7 +756,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; }
           <div class="card-title">Streetwear</div>
           <div class="card-sub">Свободный городской стиль</div>
         </div>
-        <div class="select-card" data-value="sport" onclick="selectOption('style', this)">
+        <div class="select-card card-wide" data-value="sport" onclick="selectOption('style', this)">
           <div class="card-icon">🏃</div>
           <div class="card-title">Sport</div>
           <div class="card-sub">Спортивный стиль</div>
@@ -781,7 +789,7 @@ body { display: flex; flex-direction: column; min-height: 100vh; }
           <div class="card-title">Обувь</div>
           <div class="card-sub">Кеды, лоферы</div>
         </div>
-        <div class="select-card" data-value="accessories" onclick="selectOption('category', this)">
+        <div class="select-card card-wide" data-value="accessories" onclick="selectOption('category', this)">
           <div class="card-icon">⌚</div>
           <div class="card-title">Аксессуары</div>
           <div class="card-sub">Ремни, сумки</div>
